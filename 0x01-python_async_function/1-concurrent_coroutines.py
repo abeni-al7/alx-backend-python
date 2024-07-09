@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 '''A module for calling multiple delays and returning them in a sorted list'''
 import asyncio
-import random
 from typing import List
 
 
