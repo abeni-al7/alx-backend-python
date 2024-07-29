@@ -3,8 +3,9 @@
 import unittest
 from unittest.mock import patch
 from client import GithubOrgClient
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from typing import Dict
+from fixtures import TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -62,3 +63,23 @@ class TestGithubOrgClient(unittest.TestCase):
         """Tests the has_license method"""
         test_client = GithubOrgClient("google")
         self.assertEqual(test_client.has_license(nested, license), expected)
+
+
+@parameterized_class(("org_payload", "repos_payload", "expected_repos", "apache2_repos"), TEST_PAYLOAD)
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """A class for testing the GithubOrgClient service"""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Class Setup for integration test"""
+        cls.get_patcher = patch("requests.get")
+        cls.mock = cls.get_patcher.start()
+        cls.mock.side_effect = [
+            {"json": lambda: cls.org_payload},
+            {"json": lambda: cls.repos_payload}
+        ]
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        """Cleanup after Integration test"""
+        cls.get_patcher.stop()
