@@ -83,3 +83,20 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     def tearDownClass(cls) -> None:
         """Cleanup after Integration test"""
         cls.get_patcher.stop()
+
+    def test_public_repos(self):
+        """Tests the public_repos method"""
+        test_client = GithubOrgClient("org")
+        self.assertEqual(test_client.org, self.org_payload)
+        self.assertEqual(test_client.repos_payload, self.repos_payload)
+        self.assertEqual(test_client.public_repos(), self.expected_repos)
+        self.assertEqual(test_client.public_repos("License"), [])
+        self.mock.assert_called()
+
+    def test_public_repos_with_license(self):
+        """Tests public repos with license argument"""
+        test_client = GithubOrgClient("org")
+        self.assertEqual(test_client.public_repos(), self.expected_repos)
+        self.assertEqual(test_client.public_repos("License"), [])
+        self.assertEqual(test_client.public_repos("apache-2.0"), self.apache2_repos)
+        self.mock.assert_called()
