@@ -32,3 +32,22 @@ class TestGithubOrgClient(unittest.TestCase):
           "client.GithubOrgClient.org", return_value=test_payload) as mock_url:
             result = mock_url()
             self.assertEqual(result, test_payload)
+
+    @patch("client.get_json")
+    def test_public_repos(self, mock_json):
+        """Tests the public_repos method"""
+        mock_json.return_value = {"id": "1", "name": "Ab"}
+        value = mock_json("https://example.com")
+        self.assertEqual(value, {"id": "1", "name": "Ab"})
+        test_payload = {
+                "license": {
+                    "key": "apache"
+                }
+            }
+        with patch(
+          "client.GithubOrgClient._public_repos_url",
+          return_value=test_payload) as mock_url:
+            result = mock_url("apache")
+            self.assertEqual(result, test_payload)
+            mock_url.assert_called_once()
+        mock_json.assert_called_once()
