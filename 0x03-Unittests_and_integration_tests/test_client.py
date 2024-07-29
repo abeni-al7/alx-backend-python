@@ -65,7 +65,9 @@ class TestGithubOrgClient(unittest.TestCase):
         self.assertEqual(test_client.has_license(nested, license), expected)
 
 
-@parameterized_class(("org_payload", "repos_payload", "expected_repos", "apache2_repos"), TEST_PAYLOAD)
+@parameterized_class(("org_payload", "repos_payload",
+                      "expected_repos", "apache2_repos"),
+                     TEST_PAYLOAD)
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """A class for testing the GithubOrgClient service"""
 
@@ -98,5 +100,6 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         test_client = GithubOrgClient("org")
         self.assertEqual(test_client.public_repos(), self.expected_repos)
         self.assertEqual(test_client.public_repos("License"), [])
-        self.assertEqual(test_client.public_repos("apache-2.0"), self.apache2_repos)
+        self.assertEqual(test_client.public_repos("apache-2.0"),
+                         self.apache2_repos)
         self.mock.assert_called()
